@@ -1,6 +1,4 @@
 import os
-import sys
-
 import numpy as np
 import argparse
 from tqdm import tqdm
@@ -72,7 +70,7 @@ with torch.no_grad():
             batch_input = batch_input.cuda()
         if args.no_conf:
             batch_input = batch_input[:, :, :, :2]
-        if args.flip:    
+        if args.flip:
             batch_input_flip = flip_data(batch_input)
             predicted_3d_pos_1 = model_pos(batch_input)
             predicted_3d_pos_flip = model_pos(batch_input_flip)
@@ -91,10 +89,9 @@ with torch.no_grad():
 
 results_all = np.hstack(results_all)
 results_all = np.concatenate(results_all)
-# render_and_save(results_all, '%s/X3D.mp4' % (opts.out_path), keep_imgs=False, fps=fps_in)
-# if opts.pixel:
-#     # Convert to pixel coordinates
-#     results_all = results_all * (min(vid_size) / 2.0)
-#     results_all[:,:,:2] = results_all[:,:,:2] + np.array(vid_size) / 2.0
+render_and_save(results_all, '%s/X3D.mp4' % (opts.out_path), keep_imgs=False, fps=fps_in)
+if opts.pixel:
+    # Convert to pixel coordinates
+    results_all = results_all * (min(vid_size) / 2.0)
+    results_all[:,:,:2] = results_all[:,:,:2] + np.array(vid_size) / 2.0
 np.save('%s/X3D.npy' % (opts.out_path), results_all)
-print('Finished.')
