@@ -16,9 +16,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="configs/pose3d/MB_ft_h36m_global_lite.yaml", help="Path to the config file.")
     parser.add_argument('-e', '--evaluate', default='checkpoint/pose3d/FT_MB_lite_MB_ft_h36m_global_lite/best_epoch.bin', type=str, metavar='FILENAME', help='checkpoint to evaluate (file name)')
-    parser.add_argument('-j', '--json_path', type=str, help='alphapose detection result json path')
-    parser.add_argument('-v', '--vid_path', type=str, help='video path')
-    parser.add_argument('-o', '--out_path', type=str, help='output path')
+    parser.add_argument('-j', '--json_path', type=str, help='alphapose detection result json path', default='/mnt/h/Datasets/NTU/motionbert_test/alphapose-results.json')
+    parser.add_argument('-v', '--vid_path', type=str, help='video path', default='/mnt/h/Datasets/NTU/motionbert_test/S001C001P001R001A002_rgb_out.mp4')
+    parser.add_argument('-o', '--out_path', type=str, help='output path', default='/mnt/h/Datasets/NTU/motionbert_test/')
     parser.add_argument('--pixel', action='store_true', help='align with pixle coordinates')
     parser.add_argument('--focus', type=int, default=None, help='target person id')
     parser.add_argument('--clip_len', type=int, default=243, help='clip length for network input')
@@ -41,7 +41,7 @@ model_pos.eval()
 testloader_params = {
           'batch_size': 1,
           'shuffle': False,
-          'num_workers': 8,
+          'num_workers': 6,
           'pin_memory': True,
           'prefetch_factor': 4,
           'persistent_workers': True,
@@ -89,9 +89,9 @@ with torch.no_grad():
 
 results_all = np.hstack(results_all)
 results_all = np.concatenate(results_all)
-render_and_save(results_all, '%s/X3D.mp4' % (opts.out_path), keep_imgs=False, fps=fps_in)
-if opts.pixel:
-    # Convert to pixel coordinates
-    results_all = results_all * (min(vid_size) / 2.0)
-    results_all[:,:,:2] = results_all[:,:,:2] + np.array(vid_size) / 2.0
+# render_and_save(results_all, '%s/X3D.mp4' % (opts.out_path), keep_imgs=False, fps=fps_in)
+# if opts.pixel:
+#     # Convert to pixel coordinates
+#     results_all = results_all * (min(vid_size) / 2.0)
+#     results_all[:,:,:2] = results_all[:,:,:2] + np.array(vid_size) / 2.0
 np.save('%s/X3D.npy' % (opts.out_path), results_all)
