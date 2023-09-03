@@ -24,6 +24,7 @@ def parse_args():
     parser.add_argument('--pixel', action='store_true', help='align with pixle coordinates')
     parser.add_argument('--focus', type=int, default=None, help='target person id')
     parser.add_argument('--clip_len', type=int, default=243, help='clip length for network input')
+    parser.add_argument('-f', '--file', type=str)
     opts = parser.parse_args()
     return opts
 
@@ -96,5 +97,6 @@ results_all = np.concatenate(results_all)
 #     # Convert to pixel coordinates
 #     results_all = results_all * (min(vid_size) / 2.0)
 #     results_all[:,:,:2] = results_all[:,:,:2] + np.array(vid_size) / 2.0
-np.save('%s/X3D.npy' % (opts.out_path), results_all)
+np.save(os.path.join(opts.out_path, opts.file + '.npy'), results_all)
 print('Finished.')
+sys.exit(0)

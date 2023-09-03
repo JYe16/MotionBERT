@@ -82,7 +82,7 @@ def read_input(json_path, vid_size, scale_range, focus):
         kpts_all[:,:,:2] = kpts_all[:,:,:2] / scale
         motion = kpts_all
     if scale_range:
-        motion = crop_scale(kpts_all, scale_range) 
+        motion = crop_scale(kpts_all, scale_range)
     return motion.astype(np.float32)
 
 class WildDetDataset(Dataset):
